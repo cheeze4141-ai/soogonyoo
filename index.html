@@ -72,7 +72,7 @@
     nav {
       display: flex;
       align-items: center;
-      gap: 28px;
+      gap: 24px;
     }
 
     .nav-btn {
@@ -93,7 +93,7 @@
       color: var(--fg);
     }
 
-    /* Fullscreen Single-Image Cover (Main Page) */
+    /* Fullscreen Single-Image Cover */
     #cover {
       position: relative;
       width: 100vw;
@@ -135,7 +135,7 @@
     }
 
     .cover-slide img,
-    .cover-slide .art-frame {
+    .cover-slide video {
       max-width: 100%;
       max-height: 100%;
       width: auto;
@@ -176,8 +176,9 @@
 
     .cover-dots {
       display: flex;
-      gap: 10px;
+      gap: 9px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .dot {
@@ -228,49 +229,80 @@
       cursor: pointer;
     }
 
-    .work-item:nth-child(1) { grid-column: 1 / 8; }
-    .work-item:nth-child(2) { grid-column: 9 / 13; margin-top: 90px; }
-    .work-item:nth-child(3) { grid-column: 2 / 6; }
-    .work-item:nth-child(4) { grid-column: 7 / 13; margin-top: 60px; }
-    .work-item:nth-child(5) { grid-column: 1 / 6; margin-top: 40px; }
-    .work-item:nth-child(6) { grid-column: 7 / 12; }
+    /* Repeating 6-item editorial rhythm */
+    .work-item:nth-child(6n + 1) { grid-column: 1 / 8; }
+    .work-item:nth-child(6n + 2) { grid-column: 9 / 13; margin-top: 90px; }
+    .work-item:nth-child(6n + 3) { grid-column: 2 / 6; }
+    .work-item:nth-child(6n + 4) { grid-column: 7 / 13; margin-top: 60px; }
+    .work-item:nth-child(6n + 5) { grid-column: 1 / 6; margin-top: 40px; }
+    .work-item:nth-child(6n + 6) { grid-column: 7 / 12; }
 
     .frame-wrap {
       position: relative;
       width: 100%;
       overflow: hidden;
-      background: #f7f7f7;
+      background: #f5f5f5;
+      min-height: 220px;
     }
 
-    .frame-wrap img {
+    .frame-wrap img,
+    .frame-wrap video {
       width: 100%;
       height: auto;
       display: block;
       transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .work-item:hover .frame-wrap img {
+    .work-item:hover .frame-wrap img,
+    .work-item:hover .frame-wrap video {
       transform: scale(1.015);
     }
 
-    .replace-tag {
+    .empty-slot {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 1px dashed #cccccc;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: #fafafa;
+    }
+
+    .slot-actions {
       position: absolute;
       top: 12px;
       right: 12px;
-      background: rgba(255, 255, 255, 0.9);
-      border: 1px solid var(--border);
-      color: var(--fg);
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      padding: 5px 9px;
-      cursor: pointer;
+      display: flex;
+      gap: 6px;
       opacity: 0;
       transition: opacity 0.2s ease;
       z-index: 5;
     }
 
-    .work-item:hover .replace-tag {
+    .work-item:hover .slot-actions {
       opacity: 1;
+    }
+
+    .action-tag {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--border);
+      color: var(--fg);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      padding: 5px 8px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .action-tag:hover {
+      background: var(--fg);
+      color: var(--bg);
     }
 
     .caption {
@@ -284,35 +316,37 @@
       color: var(--fg);
     }
 
+    .caption-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .insert-inline {
+      background: none;
+      border: none;
+      font-family: var(--font);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s ease, color 0.2s ease;
+      text-transform: uppercase;
+    }
+
+    .work-item:hover .insert-inline {
+      opacity: 1;
+    }
+
+    .insert-inline:hover {
+      color: var(--fg);
+    }
+
     .caption span.num {
       color: var(--muted);
       font-size: 10px;
     }
-
-    /* Editorial Placeholder Artwork (when local photos aren't loaded yet) */
-    .art-placeholder {
-      width: 100%;
-      aspect-ratio: 4 / 5;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 28px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .cover-slide .art-placeholder {
-      width: min(56vh, 80vw);
-      height: 100%;
-      aspect-ratio: 4 / 5;
-    }
-
-    .art-1 { background: radial-gradient(circle at 68% 35%, #5c4632 0%, #1c1612 55%, #0c0a09 100%); }
-    .art-2 { background: radial-gradient(circle at 22% 28%, #f3c68f 0%, #8e3b2e 45%, #191314 100%); }
-    .art-3 { background: linear-gradient(135deg, #0b1b2b 0%, #165e7a 52%, #b5452a 100%); }
-    .art-4 { background: linear-gradient(180deg, #566358 0%, #2d342e 65%, #171a18 100%); }
-    .art-5 { background: radial-gradient(circle at 52% 48%, #9be7ff 0%, #1b365d 35%, #060911 85%); }
-    .art-6 { background: linear-gradient(110deg, #f5f2ed 0%, #c89d74 48%, #1d4ed8 100%); }
 
     /* Archive List View */
     #archive-view {
@@ -400,11 +434,11 @@
     }
 
     .lb-main img,
-    .lb-main .art-placeholder {
+    .lb-main video {
       max-height: 78vh;
       max-width: 88vw;
       width: auto;
-      height: 78vh;
+      height: auto;
       object-fit: contain;
     }
 
@@ -430,7 +464,7 @@
         grid-column: 1 / -1;
         margin-top: 0;
       }
-      nav { gap: 16px; }
+      nav { gap: 14px; }
     }
   </style>
 </head>
@@ -441,16 +475,16 @@
     <nav>
       <button class="nav-btn active" id="btn-all" onclick="showAll()">ALL</button>
       <button class="nav-btn" id="btn-archive" onclick="showArchive()">ARCHIVE</button>
+      <button class="nav-btn" onclick="addNewSlot(projects.length)">+ ADD SLOT</button>
       <button class="nav-btn" onclick="triggerBulkUpload()">+ UPLOAD</button>
       <button class="nav-btn" onclick="toggleInfo(true)">INFO</button>
     </nav>
   </header>
 
-  <!-- Fullscreen Single-Image Cover -->
+  <!-- Fullscreen Single-Media Cover -->
   <section id="cover">
     <div class="cover-stage" id="cover-stage" onclick="enterWork()">
       <button class="cover-replace" onclick="event.stopPropagation(); replaceSingle(currentSlide)">REPLACE</button>
-      <!-- Slides injected by JS -->
     </div>
     <div class="cover-footer">
       <div class="cover-dots" id="cover-dots"></div>
@@ -474,8 +508,8 @@
     </div>
     <div class="info-body">
       <div>SEOUL, REPUBLIC OF KOREA</div>
-      <a href="mailto:contact@soogonyoo.com">CONTACT@SOOGONYOO.COM</a>
-      <a href="https://instagram.com" target="_blank" rel="noopener">INSTAGRAM</a>
+      <a href="mailto:sgy@bordistudio.com">SGY@BORDISTUDIO.COM</a>
+      <a href="https://www.instagram.com/yoosugon/" target="_blank" rel="noopener">INSTAGRAM (@YOOSUGON)</a>
     </div>
     <div style="font-size:10px; letter-spacing:0.12em; color:var(--muted);">
       &copy; 2026 SOOGON YOO
@@ -499,23 +533,77 @@
     </div>
   </div>
 
-  <input type="file" id="single-input" accept="image/*" style="display:none;" />
-  <input type="file" id="bulk-input" accept="image/*" multiple style="display:none;" />
+  <input type="file" id="single-input" accept="image/*,video/*" style="display:none;" />
+  <input type="file" id="bulk-input" accept="image/*,video/*" multiple style="display:none;" />
 
   <script>
-    const projects = [
-      { id: '01', title: 'COLDE CONCEPT PHOTO', year: '2026', artClass: 'art-1', img: null },
-      { id: '02', title: 'JENNIE BTS PHOTO', year: '2026', artClass: 'art-2', img: null },
-      { id: '03', title: 'EDITORIAL I', year: '2026', artClass: 'art-3', img: null },
-      { id: '04', title: 'EDITORIAL II', year: '2026', artClass: 'art-4', img: null },
-      { id: '05', title: 'EDITORIAL III', year: '2026', artClass: 'art-5', img: null },
-      { id: '06', title: 'EDITORIAL IV', year: '2026', artClass: 'art-6', img: null }
+    const defaultProjects = [
+      { title: 'KITARA CAMPAIGN I', year: '2026', img: 'yoosugon-post-DcTWj2sFAR--01.jpg' },
+      { title: 'KITARA CAMPAIGN II', year: '2026', img: 'yoosugon-post-DcTWj2sFAR--06.jpg' },
+      { title: 'KITARA CAMPAIGN III', year: '2026', img: 'yoosugon-post-DcTWj2sFAR--09.jpg' },
+      { title: 'KITARA CAMPAIGN IV', year: '2026', img: 'yoosugon-post-DcTWj2sFAR--12.jpg' },
+      { title: 'KITARA CAMPAIGN V', year: '2026', img: 'yoosugon-post-DcTWj2sFAR--16.jpg' },
+      { title: 'COLDE CONCEPT PHOTO', year: '2026', img: 'yoosugon-post-Dddein_zyHF.jpg' },
+      { title: 'JENNIE BTS PHOTO I', year: '2026', img: 'yoosugon-post-DdQ3DBLlOnf-01.jpg' },
+      { title: 'JENNIE BTS PHOTO II', year: '2026', img: 'yoosugon-post-DdQ3DBLlOnf-08.jpg' },
+      { title: 'YUNE LOOKBOOK I', year: '2026', img: 'yoosugon-post-DeL_Ln8FETK-01.jpg' },
+      { title: 'YUNE LOOKBOOK II', year: '2026', img: 'yoosugon-post-DeL_Ln8FETK-02.jpg' },
+      { title: 'YUNE LOOKBOOK III', year: '2026', img: 'yoosugon-post-DeL_Ln8FETK-04.jpg' },
+      { title: 'EDITORIAL FILM I', year: '2026', img: 'video_1.mp4', type: 'video' },
+      { title: 'EDITORIAL V', year: '2026', img: 'yoosugon-post-Detv8mEFP9g-02.jpg' },
+      { title: 'EDITORIAL VI', year: '2026', img: 'yoosugon-post-Detv8mEFP9g-04.jpg' },
+      { title: 'EDITORIAL VII', year: '2026', img: 'yoosugon-post-DezC3bSFAkC-01.jpg' },
+      { title: 'EDITORIAL VIII', year: '2026', img: 'yoosugon-post-DezC3bSFAkC-03.jpg' },
+      { title: 'EDITORIAL IX', year: '2026', img: 'yoosugon-post-DezC3bSFAkC-04.jpg' }
     ];
+
+    const STORAGE_KEY = 'soogonyoo_portfolio_v4';
+    let projects = [];
+
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      projects = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultProjects));
+    } catch (e) {
+      projects = JSON.parse(JSON.stringify(defaultProjects));
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+      } catch (e) {}
+    }
+
+    function isVideoItem(p) {
+      if (!p || !p.img) return false;
+      if (p.type === 'video') return true;
+      return /\.(mp4|mov|webm|m4v)(\?|$)/i.test(p.img) || p.img.startsWith('data:video/');
+    }
+
+    function createMediaElement(p, isLightbox = false) {
+      if (isVideoItem(p)) {
+        const video = document.createElement('video');
+        video.src = p.img;
+        video.autoplay = true;
+        video.loop = true;
+        video.muted = true;
+        video.playsInline = true;
+        if (isLightbox) video.controls = true;
+        return video;
+      }
+      const img = document.createElement('img');
+      img.src = p.img;
+      img.alt = p.title;
+      return img;
+    }
 
     let currentSlide = 0;
     let activeIndex = 0;
     let replaceTargetIndex = 0;
     let slideTimer = null;
+
+    function padNum(n) {
+      return String(n).padStart(2, '0');
+    }
 
     function renderCover() {
       const stage = document.getElementById('cover-stage');
@@ -525,18 +613,22 @@
       stage.appendChild(replaceBtn);
       dots.innerHTML = '';
 
-      projects.forEach((p, idx) => {
+      const validSlides = projects.map((p, idx) => ({ ...p, originalIdx: idx })).filter(p => p.img);
+      const list = validSlides.length ? validSlides : projects.map((p, idx) => ({ ...p, originalIdx: idx }));
+
+      if (currentSlide >= list.length) currentSlide = 0;
+
+      list.forEach((p, idx) => {
         const slide = document.createElement('div');
         slide.className = 'cover-slide' + (idx === currentSlide ? ' active' : '');
         if (p.img) {
-          const img = document.createElement('img');
-          img.src = p.img;
-          img.alt = p.title;
-          slide.appendChild(img);
+          slide.appendChild(createMediaElement(p, false));
         } else {
-          const art = document.createElement('div');
-          art.className = `art-placeholder ${p.artClass}`;
-          slide.appendChild(art);
+          const empty = document.createElement('div');
+          empty.className = 'empty-slot';
+          empty.style.width = 'min(52vh, 80vw)';
+          empty.textContent = '+ CLICK REPLACE TO UPLOAD';
+          slide.appendChild(empty);
         }
         stage.appendChild(slide);
 
@@ -544,14 +636,15 @@
         dot.className = 'dot' + (idx === currentSlide ? ' active' : '');
         dot.onclick = (e) => {
           e.stopPropagation();
-          setSlide(idx);
+          setSlide(idx, list.length);
         };
         dots.appendChild(dot);
       });
     }
 
-    function setSlide(idx) {
-      currentSlide = (idx + projects.length) % projects.length;
+    function setSlide(idx, total) {
+      const count = total || document.querySelectorAll('.cover-slide').length || 1;
+      currentSlide = (idx + count) % count;
       document.querySelectorAll('.cover-slide').forEach((el, i) => {
         el.classList.toggle('active', i === currentSlide);
       });
@@ -575,44 +668,80 @@
       archive.innerHTML = '';
 
       projects.forEach((p, idx) => {
+        const numStr = padNum(idx + 1);
         const item = document.createElement('article');
         item.className = 'work-item';
-        item.onclick = () => openLightbox(idx);
+        item.onclick = () => {
+          if (p.img) {
+            openLightbox(idx);
+          } else {
+            replaceSingle(idx);
+          }
+        };
 
         // Drag & drop support per item
         item.ondragover = (e) => { e.preventDefault(); };
         item.ondrop = (e) => {
           e.preventDefault();
           const file = e.dataTransfer.files[0];
-          if (file && file.type.startsWith('image/')) loadImageFile(file, idx);
+          if (file && (file.type.startsWith('image/') || file.type.startsWith('video/'))) {
+            loadMediaFile(file, idx);
+          }
         };
 
         const frame = document.createElement('div');
         frame.className = 'frame-wrap';
 
+        const actions = document.createElement('div');
+        actions.className = 'slot-actions';
+
         const repBtn = document.createElement('button');
-        repBtn.className = 'replace-tag';
-        repBtn.textContent = 'REPLACE';
+        repBtn.className = 'action-tag';
+        repBtn.textContent = p.img ? 'REPLACE' : 'UPLOAD';
         repBtn.onclick = (e) => {
           e.stopPropagation();
           replaceSingle(idx);
         };
-        frame.appendChild(repBtn);
+
+        const insBtn = document.createElement('button');
+        insBtn.className = 'action-tag';
+        insBtn.textContent = '+ INSERT';
+        insBtn.onclick = (e) => {
+          e.stopPropagation();
+          addNewSlot(idx + 1);
+        };
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'action-tag';
+        delBtn.textContent = '×';
+        delBtn.onclick = (e) => {
+          e.stopPropagation();
+          removeSlot(idx);
+        };
+
+        actions.appendChild(repBtn);
+        actions.appendChild(insBtn);
+        if (projects.length > 1) actions.appendChild(delBtn);
+        frame.appendChild(actions);
 
         if (p.img) {
-          const img = document.createElement('img');
-          img.src = p.img;
-          img.alt = p.title;
-          frame.appendChild(img);
+          frame.appendChild(createMediaElement(p, false));
         } else {
-          const art = document.createElement('div');
-          art.className = `art-placeholder ${p.artClass}`;
-          frame.appendChild(art);
+          const empty = document.createElement('div');
+          empty.className = 'empty-slot';
+          empty.innerHTML = `<span>+ UPLOAD MEDIA</span><span style="font-size:9px;">DROP IMAGE/VIDEO OR CLICK</span>`;
+          frame.appendChild(empty);
         }
 
         const cap = document.createElement('div');
         cap.className = 'caption';
-        cap.innerHTML = `<span>${p.title}</span><span class="num">${p.id}</span>`;
+        cap.innerHTML = `
+          <span>${p.title}</span>
+          <div class="caption-right">
+            <button class="insert-inline" onclick="event.stopPropagation(); addNewSlot(${idx + 1})">+ INSERT AFTER</button>
+            <span class="num">${numStr}</span>
+          </div>
+        `;
 
         item.appendChild(frame);
         item.appendChild(cap);
@@ -621,10 +750,31 @@
         // Archive Row
         const row = document.createElement('div');
         row.className = 'archive-row';
-        row.innerHTML = `<span>${p.id}</span><span>${p.title}</span><span style="text-align:right; color:var(--muted);">${p.year}</span>`;
+        row.innerHTML = `<span>${numStr}</span><span>${p.title}</span><span style="text-align:right; color:var(--muted);">${p.year}</span>`;
         row.onclick = () => openLightbox(idx);
         archive.appendChild(row);
       });
+    }
+
+    function addNewSlot(insertIndex) {
+      const nextNumber = padNum(projects.length + 1);
+      projects.splice(insertIndex, 0, {
+        title: `EDITORIAL ${nextNumber}`,
+        year: '2026',
+        img: null
+      });
+      saveState();
+      renderCover();
+      renderGrid();
+      replaceSingle(insertIndex);
+    }
+
+    function removeSlot(idx) {
+      if (projects.length <= 1) return;
+      projects.splice(idx, 1);
+      saveState();
+      renderCover();
+      renderGrid();
     }
 
     function enterWork() {
@@ -661,18 +811,18 @@
     function openLightbox(idx) {
       activeIndex = idx;
       const p = projects[idx];
-      document.getElementById('lb-title').textContent = `${p.id} — ${p.title}`;
+      document.getElementById('lb-title').textContent = `${padNum(idx + 1)} — ${p.title}`;
       document.getElementById('lb-counter').textContent = `${idx + 1} / ${projects.length}`;
       const main = document.getElementById('lb-main');
       main.innerHTML = '';
       if (p.img) {
-        const img = document.createElement('img');
-        img.src = p.img;
-        main.appendChild(img);
+        main.appendChild(createMediaElement(p, true));
       } else {
-        const art = document.createElement('div');
-        art.className = `art-placeholder ${p.artClass}`;
-        main.appendChild(art);
+        const empty = document.createElement('div');
+        empty.className = 'empty-slot';
+        empty.style.width = '60vw';
+        empty.textContent = '+ CLICK REPLACE TO UPLOAD';
+        main.appendChild(empty);
       }
       document.getElementById('lightbox').classList.add('open');
     }
@@ -694,10 +844,21 @@
       document.getElementById('bulk-input').click();
     }
 
-    function loadImageFile(file, idx) {
+    function loadMediaFile(file, idx) {
+      const isVid = file.type.startsWith('video/');
+      if (isVid) {
+        projects[idx].img = URL.createObjectURL(file);
+        projects[idx].type = 'video';
+        renderCover();
+        renderGrid();
+        if (document.getElementById('lightbox').classList.contains('open')) openLightbox(idx);
+        return;
+      }
       const reader = new FileReader();
       reader.onload = (e) => {
         projects[idx].img = e.target.result;
+        projects[idx].type = 'image';
+        saveState();
         renderCover();
         renderGrid();
         if (document.getElementById('lightbox').classList.contains('open')) {
@@ -709,14 +870,24 @@
 
     document.getElementById('single-input').addEventListener('change', (e) => {
       const file = e.target.files[0];
-      if (file) loadImageFile(file, replaceTargetIndex);
+      if (file) loadMediaFile(file, replaceTargetIndex);
       e.target.value = '';
     });
 
     document.getElementById('bulk-input').addEventListener('change', (e) => {
       const files = Array.from(e.target.files);
-      files.slice(0, projects.length).forEach((file, idx) => {
-        loadImageFile(file, idx);
+      files.forEach((file, i) => {
+        if (i < projects.length) {
+          loadMediaFile(file, i);
+        } else {
+          const newIdx = projects.length;
+          projects.push({
+            title: `EDITORIAL ${padNum(newIdx + 1)}`,
+            year: '2026',
+            img: null
+          });
+          loadMediaFile(file, newIdx);
+        }
       });
       e.target.value = '';
     });
@@ -727,7 +898,9 @@
     coverStage.ondrop = (e) => {
       e.preventDefault();
       const file = e.dataTransfer.files[0];
-      if (file && file.type.startsWith('image/')) loadImageFile(file, currentSlide);
+      if (file && (file.type.startsWith('image/') || file.type.startsWith('video/'))) {
+        loadMediaFile(file, currentSlide);
+      }
     };
 
     window.addEventListener('scroll', () => {
