@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SOOGON YOO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #ffffff;
+      --fg: #111111;
+      --muted: #888888;
+      --border: #eaeaea;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      overflow-x: hidden;
+    }
+
+    /* Fixed Minimal Header */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 36px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: background 0.3s ease;
+    }
+
+    header.on-cover {
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    .brand {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--fg);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+      color: var(--fg);
+    }
+
+    /* Fullscreen Single-Image Cover (Main Page) */
+    #cover {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 84px 36px 68px;
+      background: var(--bg);
+    }
+
+    .cover-stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: 1200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .cover-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+    }
+
+    .cover-slide.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .cover-slide img,
+    .cover-slide .art-frame {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .cover-replace {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid var(--border);
+      color: var(--fg);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 6px 10px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .cover-stage:hover .cover-replace {
+      opacity: 1;
+    }
+
+    .cover-footer {
+      position: absolute;
+      bottom: 24px;
+      left: 36px;
+      right: 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cover-dots {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #d4d4d4;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .dot.active {
+      background: var(--fg);
+      transform: scale(1.25);
+    }
+
+    .enter-btn {
+      background: none;
+      border: none;
+      font-family: var(--font);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--fg);
+      cursor: pointer;
+      padding: 4px 0;
+    }
+
+    /* Editorial Asymmetric Portfolio Grid */
+    #work {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 120px 36px 140px;
+    }
+
+    .editorial-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      column-gap: 32px;
+      row-gap: 110px;
+      align-items: start;
+    }
+
+    .work-item {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .work-item:nth-child(1) { grid-column: 1 / 8; }
+    .work-item:nth-child(2) { grid-column: 9 / 13; margin-top: 90px; }
+    .work-item:nth-child(3) { grid-column: 2 / 6; }
+    .work-item:nth-child(4) { grid-column: 7 / 13; margin-top: 60px; }
+    .work-item:nth-child(5) { grid-column: 1 / 6; margin-top: 40px; }
+    .work-item:nth-child(6) { grid-column: 7 / 12; }
+
+    .frame-wrap {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      background: #f7f7f7;
+    }
+
+    .frame-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .work-item:hover .frame-wrap img {
+      transform: scale(1.015);
+    }
+
+    .replace-tag {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--border);
+      color: var(--fg);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 5px 9px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 5;
+    }
+
+    .work-item:hover .replace-tag {
+      opacity: 1;
+    }
+
+    .caption {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--fg);
+    }
+
+    .caption span.num {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    /* Editorial Placeholder Artwork (when local photos aren't loaded yet) */
+    .art-placeholder {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover-slide .art-placeholder {
+      width: min(56vh, 80vw);
+      height: 100%;
+      aspect-ratio: 4 / 5;
+    }
+
+    .art-1 { background: radial-gradient(circle at 68% 35%, #5c4632 0%, #1c1612 55%, #0c0a09 100%); }
+    .art-2 { background: radial-gradient(circle at 22% 28%, #f3c68f 0%, #8e3b2e 45%, #191314 100%); }
+    .art-3 { background: linear-gradient(135deg, #0b1b2b 0%, #165e7a 52%, #b5452a 100%); }
+    .art-4 { background: linear-gradient(180deg, #566358 0%, #2d342e 65%, #171a18 100%); }
+    .art-5 { background: radial-gradient(circle at 52% 48%, #9be7ff 0%, #1b365d 35%, #060911 85%); }
+    .art-6 { background: linear-gradient(110deg, #f5f2ed 0%, #c89d74 48%, #1d4ed8 100%); }
+
+    /* Archive List View */
+    #archive-view {
+      display: none;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 130px 36px 140px;
+    }
+
+    .archive-row {
+      display: grid;
+      grid-template-columns: 80px 1fr 140px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .archive-row:hover {
+      opacity: 0.5;
+    }
+
+    /* Info Modal */
+    #info-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(255, 255, 255, 0.98);
+      padding: 24px 36px;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    #info-modal.open {
+      display: flex;
+    }
+
+    .info-body {
+      max-width: 480px;
+      margin: auto 0;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      line-height: 1.9;
+      text-transform: uppercase;
+    }
+
+    .info-body a {
+      color: var(--fg);
+      text-decoration: none;
+      border-bottom: 1px solid var(--fg);
+      padding-bottom: 2px;
+      width: fit-content;
+    }
+
+    /* Lightbox */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(255, 255, 255, 0.98);
+      padding: 24px 36px;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    #lightbox.open {
+      display: flex;
+    }
+
+    .lb-main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 24px 0;
+    }
+
+    .lb-main img,
+    .lb-main .art-placeholder {
+      max-height: 78vh;
+      max-width: 88vw;
+      width: auto;
+      height: 78vh;
+      object-fit: contain;
+    }
+
+    .lb-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 900px) {
+      header { padding: 20px; }
+      #cover { padding: 76px 20px 64px; }
+      .cover-footer { left: 20px; right: 20px; bottom: 20px; }
+      #work { padding: 90px 20px 100px; }
+      .editorial-grid {
+        grid-template-columns: 1fr;
+        row-gap: 64px;
+      }
+      .work-item:nth-child(n) {
+        grid-column: 1 / -1;
+        margin-top: 0;
+      }
+      nav { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header id="site-header" class="on-cover">
+    <a class="brand" onclick="goCover()">SOOGON YOO</a>
+    <nav>
+      <button class="nav-btn active" id="btn-all" onclick="showAll()">ALL</button>
+      <button class="nav-btn" id="btn-archive" onclick="showArchive()">ARCHIVE</button>
+      <button class="nav-btn" onclick="triggerBulkUpload()">+ UPLOAD</button>
+      <button class="nav-btn" onclick="toggleInfo(true)">INFO</button>
+    </nav>
+  </header>
+
+  <!-- Fullscreen Single-Image Cover -->
+  <section id="cover">
+    <div class="cover-stage" id="cover-stage" onclick="enterWork()">
+      <button class="cover-replace" onclick="event.stopPropagation(); replaceSingle(currentSlide)">REPLACE</button>
+      <!-- Slides injected by JS -->
+    </div>
+    <div class="cover-footer">
+      <div class="cover-dots" id="cover-dots"></div>
+      <button class="enter-btn" onclick="enterWork()">ENTER &darr;</button>
+    </div>
+  </section>
+
+  <!-- Asymmetric Editorial Grid -->
+  <main id="work">
+    <div class="editorial-grid" id="editorial-grid"></div>
+  </main>
+
+  <!-- Archive Index -->
+  <section id="archive-view"></section>
+
+  <!-- Minimal Info Overlay -->
+  <div id="info-modal">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <span class="brand">SOOGON YOO</span>
+      <button class="nav-btn" style="color:var(--fg);" onclick="toggleInfo(false)">CLOSE</button>
+    </div>
+    <div class="info-body">
+      <div>SEOUL, REPUBLIC OF KOREA</div>
+      <a href="mailto:contact@soogonyoo.com">CONTACT@SOOGONYOO.COM</a>
+      <a href="https://instagram.com" target="_blank" rel="noopener">INSTAGRAM</a>
+    </div>
+    <div style="font-size:10px; letter-spacing:0.12em; color:var(--muted);">
+      &copy; 2026 SOOGON YOO
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <span id="lb-title" style="font-size:11px; letter-spacing:0.12em; text-transform:uppercase;"></span>
+      <div style="display:flex; gap:20px;">
+        <button class="nav-btn" style="color:var(--fg);" onclick="replaceSingle(activeIndex)">REPLACE</button>
+        <button class="nav-btn" style="color:var(--fg);" onclick="closeLightbox()">CLOSE</button>
+      </div>
+    </div>
+    <div class="lb-main" id="lb-main"></div>
+    <div class="lb-footer">
+      <button class="nav-btn" style="color:var(--fg);" onclick="stepLightbox(-1)">&larr; PREV</button>
+      <span id="lb-counter" style="color:var(--muted);"></span>
+      <button class="nav-btn" style="color:var(--fg);" onclick="stepLightbox(1)">NEXT &rarr;</button>
+    </div>
+  </div>
+
+  <input type="file" id="single-input" accept="image/*" style="display:none;" />
+  <input type="file" id="bulk-input" accept="image/*" multiple style="display:none;" />
+
+  <script>
+    const projects = [
+      { id: '01', title: 'COLDE CONCEPT PHOTO', year: '2026', artClass: 'art-1', img: null },
+      { id: '02', title: 'JENNIE BTS PHOTO', year: '2026', artClass: 'art-2', img: null },
+      { id: '03', title: 'EDITORIAL I', year: '2026', artClass: 'art-3', img: null },
+      { id: '04', title: 'EDITORIAL II', year: '2026', artClass: 'art-4', img: null },
+      { id: '05', title: 'EDITORIAL III', year: '2026', artClass: 'art-5', img: null },
+      { id: '06', title: 'EDITORIAL IV', year: '2026', artClass: 'art-6', img: null }
+    ];
+
+    let currentSlide = 0;
+    let activeIndex = 0;
+    let replaceTargetIndex = 0;
+    let slideTimer = null;
+
+    function renderCover() {
+      const stage = document.getElementById('cover-stage');
+      const dots = document.getElementById('cover-dots');
+      const replaceBtn = stage.querySelector('.cover-replace');
+      stage.innerHTML = '';
+      stage.appendChild(replaceBtn);
+      dots.innerHTML = '';
+
+      projects.forEach((p, idx) => {
+        const slide = document.createElement('div');
+        slide.className = 'cover-slide' + (idx === currentSlide ? ' active' : '');
+        if (p.img) {
+          const img = document.createElement('img');
+          img.src = p.img;
+          img.alt = p.title;
+          slide.appendChild(img);
+        } else {
+          const art = document.createElement('div');
+          art.className = `art-placeholder ${p.artClass}`;
+          slide.appendChild(art);
+        }
+        stage.appendChild(slide);
+
+        const dot = document.createElement('button');
+        dot.className = 'dot' + (idx === currentSlide ? ' active' : '');
+        dot.onclick = (e) => {
+          e.stopPropagation();
+          setSlide(idx);
+        };
+        dots.appendChild(dot);
+      });
+    }
+
+    function setSlide(idx) {
+      currentSlide = (idx + projects.length) % projects.length;
+      document.querySelectorAll('.cover-slide').forEach((el, i) => {
+        el.classList.toggle('active', i === currentSlide);
+      });
+      document.querySelectorAll('.dot').forEach((el, i) => {
+        el.classList.toggle('active', i === currentSlide);
+      });
+      restartTimer();
+    }
+
+    function restartTimer() {
+      if (slideTimer) clearInterval(slideTimer);
+      slideTimer = setInterval(() => {
+        setSlide(currentSlide + 1);
+      }, 4500);
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById('editorial-grid');
+      const archive = document.getElementById('archive-view');
+      grid.innerHTML = '';
+      archive.innerHTML = '';
+
+      projects.forEach((p, idx) => {
+        const item = document.createElement('article');
+        item.className = 'work-item';
+        item.onclick = () => openLightbox(idx);
+
+        // Drag & drop support per item
+        item.ondragover = (e) => { e.preventDefault(); };
+        item.ondrop = (e) => {
+          e.preventDefault();
+          const file = e.dataTransfer.files[0];
+          if (file && file.type.startsWith('image/')) loadImageFile(file, idx);
+        };
+
+        const frame = document.createElement('div');
+        frame.className = 'frame-wrap';
+
+        const repBtn = document.createElement('button');
+        repBtn.className = 'replace-tag';
+        repBtn.textContent = 'REPLACE';
+        repBtn.onclick = (e) => {
+          e.stopPropagation();
+          replaceSingle(idx);
+        };
+        frame.appendChild(repBtn);
+
+        if (p.img) {
+          const img = document.createElement('img');
+          img.src = p.img;
+          img.alt = p.title;
+          frame.appendChild(img);
+        } else {
+          const art = document.createElement('div');
+          art.className = `art-placeholder ${p.artClass}`;
+          frame.appendChild(art);
+        }
+
+        const cap = document.createElement('div');
+        cap.className = 'caption';
+        cap.innerHTML = `<span>${p.title}</span><span class="num">${p.id}</span>`;
+
+        item.appendChild(frame);
+        item.appendChild(cap);
+        grid.appendChild(item);
+
+        // Archive Row
+        const row = document.createElement('div');
+        row.className = 'archive-row';
+        row.innerHTML = `<span>${p.id}</span><span>${p.title}</span><span style="text-align:right; color:var(--muted);">${p.year}</span>`;
+        row.onclick = () => openLightbox(idx);
+        archive.appendChild(row);
+      });
+    }
+
+    function enterWork() {
+      showAll();
+      document.getElementById('work').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function goCover() {
+      showAll();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showAll() {
+      document.getElementById('cover').style.display = 'flex';
+      document.getElementById('work').style.display = 'block';
+      document.getElementById('archive-view').style.display = 'none';
+      document.getElementById('btn-all').classList.add('active');
+      document.getElementById('btn-archive').classList.remove('active');
+    }
+
+    function showArchive() {
+      document.getElementById('cover').style.display = 'none';
+      document.getElementById('work').style.display = 'none';
+      document.getElementById('archive-view').style.display = 'block';
+      document.getElementById('btn-archive').classList.add('active');
+      document.getElementById('btn-all').classList.remove('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleInfo(open) {
+      document.getElementById('info-modal').classList.toggle('open', open);
+    }
+
+    function openLightbox(idx) {
+      activeIndex = idx;
+      const p = projects[idx];
+      document.getElementById('lb-title').textContent = `${p.id} — ${p.title}`;
+      document.getElementById('lb-counter').textContent = `${idx + 1} / ${projects.length}`;
+      const main = document.getElementById('lb-main');
+      main.innerHTML = '';
+      if (p.img) {
+        const img = document.createElement('img');
+        img.src = p.img;
+        main.appendChild(img);
+      } else {
+        const art = document.createElement('div');
+        art.className = `art-placeholder ${p.artClass}`;
+        main.appendChild(art);
+      }
+      document.getElementById('lightbox').classList.add('open');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+    }
+
+    function stepLightbox(dir) {
+      openLightbox((activeIndex + dir + projects.length) % projects.length);
+    }
+
+    function replaceSingle(idx) {
+      replaceTargetIndex = idx;
+      document.getElementById('single-input').click();
+    }
+
+    function triggerBulkUpload() {
+      document.getElementById('bulk-input').click();
+    }
+
+    function loadImageFile(file, idx) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        projects[idx].img = e.target.result;
+        renderCover();
+        renderGrid();
+        if (document.getElementById('lightbox').classList.contains('open')) {
+          openLightbox(idx);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    document.getElementById('single-input').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) loadImageFile(file, replaceTargetIndex);
+      e.target.value = '';
+    });
+
+    document.getElementById('bulk-input').addEventListener('change', (e) => {
+      const files = Array.from(e.target.files);
+      files.slice(0, projects.length).forEach((file, idx) => {
+        loadImageFile(file, idx);
+      });
+      e.target.value = '';
+    });
+
+    // Cover stage drag & drop
+    const coverStage = document.getElementById('cover-stage');
+    coverStage.ondragover = (e) => e.preventDefault();
+    coverStage.ondrop = (e) => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) loadImageFile(file, currentSlide);
+    };
+
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('site-header');
+      header.classList.toggle('on-cover', window.scrollY < window.innerHeight * 0.75);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeLightbox();
+        toggleInfo(false);
+      } else if (document.getElementById('lightbox').classList.contains('open')) {
+        if (e.key === 'ArrowRight') stepLightbox(1);
+        if (e.key === 'ArrowLeft') stepLightbox(-1);
+      }
+    });
+
+    renderCover();
+    renderGrid();
+    restartTimer();
+  </script>
+</body>
+</html>
